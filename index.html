@@ -3,54 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kelpui@1/css/kelp.css">
+  <link rel="icon" href="favicon.ico">
   <title>Est-ce ouvert ?</title>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/kelpui@1/js/kelp.js"></script>
   <script src="https://openingh.openstreetmap.de/build/opening_hours+deps.min.js"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="script.js" defer></script>
 </head>
 <body>
-  <main>
-    <h1>Est-ce ouvert ?</h1>
-    <p>Nous sommes le <span id="todayIs"></span></p>
-    <h2>Comment ça marche ?</h2>
-    <p>Rendez-vous sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> et sélectionnez l'établissement avec horaires que vous souhaitez ajouter à la liste. Copiez-collez l'URL (par exemple https://www.openstreetmap.org/node/10793287765) dans le champ ci-dessous et cliquez sur Ajouter.</p>
-    <div id="app">
-      <h2>Allons-y !</h2>
+  <noscript>Ce service dépend de JavaScript ; pour en profiter vous devez l'activer.</noscript>
+  <main class="container-xl" id="app">
+    <h1><span aria-hidden="true">&#127978; </span>Est-ce ouvert ?</h1>
+    <p>Si comme moi vous en avez assez de demander régulièrement à Google les horaires de la bibliothèque ou du supermarché voici un moyen de rassembler sur une page vos établissements habituels avec leurs horaires.</p>
+    <details>
+      <summary>Comment ça marche ?</summary>
+      <p>Rendez-vous sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> et sélectionnez l'établissement avec horaires que vous souhaitez ajouter à la liste. Copiez-collez l'URL (par exemple https://www.openstreetmap.org/node/10793287765) dans le champ ci-dessous et cliquez sur Ajouter.</p>
+      <p>Si vous avez paramétré votre navigateur pour vider l'historique à la fermeture vous voudrez peut-être ajouter une exception pour ce site de manière à ne pas perdre votre liste car les données sont enregistrées localement dans votre navigateur.</p>
+    </details>
+    <div v-if="localStorageAvailable">
       <form v-on:submit.prevent="addItem">
-        <label for="itemUrl">URL :</label>
-        <input id="itemUrl" type="text" required v-model="itemUrl">
-        <button type="submit">Ajouter</button>
+        <label for="itemUrl">URL</label>
+        <input id="itemUrl" type="text" placeholder="https://www.openstreetmap.org/node/10793287765" v-model="itemUrl" required>
+        <button type="submit" class="primary">Ajouter</button>
       </form>
       <section>
-        <p>{{ fetchInfo }} <button type="button" v-if="fetchFailed" v-on:click="fetchData(fetchQuery)">Relancer</button></p>
-        <table id="liste">
-            <thead>
-              <tr>
-                <th scope="col">Supprimer</th>
-                <th scope="col">ID</th>
-                <th scope="col">Nom</th>
-                <th scope="col">Horaires</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in itemList">
-                <td><button type="button" v-on:click="deleteItem(item.id)">X</button></td>
-                <td>{{ item.id }}</td>
-                <td>{{ item.name }}</td>
-                <td>{{ item.oh }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <p v-if="info" class="callout">{{ info }} <button type="button" v-if="fetchFailed" v-on:click="fetchData(fetchQuery)" class="muted secondary">Relancer</button></p>
+        <p class="text-center margin-start-m text-color primary">Nous sommes le {{ now }}</p>
+        <table id="liste" v-if="itemList.length > 0">
+          <thead>
+            <tr>
+              <th scope="col">Supprimer</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Horaires</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in itemList">
+              <td><button type="button" v-on:click="deleteItem(item.id)" class="muted warning">X</button></td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.oh }}</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
     </div>
+    <p v-else="localStorageAvailable" class="callout warning">Ce service dépend du stockage local de votre navigateur et il ne semble pas fonctionner correctement. Essayez avec un autre navigateur ?</p>
   </main>
-  <footer>
-    <p>Quelques crédits : ce service s'appuie sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> (contribuez en vous amusant avec <a href="https://streetcomplete.app/" target="_blank">StreetComplete</a>), l'<a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank">API Overpass</a> et la bibliothèque <a href="https://github.com/opening-hours/opening_hours.js" target="_blank">opening_hours.js</a>.</p>
+  <footer class="container-xl margin-start-6xl size-s">
+    <hr>
+    <p>Ce service s'appuie sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> (contribuez en vous amusant avec <a href="https://streetcomplete.app/" target="_blank">StreetComplete</a>), l'<a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank">API Overpass</a>, la bibliothèque <a href="https://github.com/opening-hours/opening_hours.js" target="_blank">opening_hours.js</a>, le framework <a href="https://vuejs.org/" target="_blank">Vue.js</a> et la bibliothèque d'interface <a href="https://kelpui.com/" target="_blank">Kelp</a>.</p>
   </footer>
-  <script>
-      const now = new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"}).format(Temporal.Now.plainDateTimeISO());
-      const html_todayIs = document.getElementById("todayIs");
-      html_todayIs.innerText = `${now}`;
-  </script>
 </body>
 </html>
