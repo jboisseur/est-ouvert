@@ -34,16 +34,16 @@
         <table id="liste" v-if="itemList.length > 0">
           <thead>
             <tr>
-              <th scope="col">Supprimer</th>
               <th scope="col">Nom</th>
               <th scope="col">Horaires</th>
+              <th scope="col">Supprimer</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in itemList">
-              <td><button type="button" v-on:click="deleteItem(item.id)" class="muted warning">X</button></td>
               <td>{{ item.name }}</td>
               <td v-html="createNewLine(item.oh)"></td>
+              <td><button type="button" v-on:click="deleteItem(item.id)" class="muted warning size-3xs">X</button></td>
             </tr>
           </tbody>
         </table>

@@ -122,8 +122,7 @@ const app = Vue.createApp({
             return oh.prettifyValue({ conf: { locale: locale } });
         },
         createNewLine(str) {
-            const res = str.split("; ").join("<br>");
-            return `${res}`;
+            return str.split("; ").join("<br>").split(",").join(", ");
         }
     }
 })

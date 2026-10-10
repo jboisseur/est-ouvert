@@ -19,5 +19,6 @@ Ce service s'appuie sur
 
 ## UI
 - [x] Trouver un moyen de faire un saut de ligne entre les jours
+- [x] Ajouter une espace après la virgules dans les heures pour améliorer l'affichage sur téléphone
 - [ ] Trouver comment ne pas indiquer comme erroné le champ vidé une fois cliqué sur Ajouter
 - [ ] Permettre de réorganiser les lignes du tableau par glisser / déposer
