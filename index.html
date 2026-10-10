@@ -19,8 +19,8 @@
     <p>Si comme moi vous en avez assez de demander régulièrement à Google les horaires de la bibliothèque ou du supermarché voici un moyen de rassembler sur une page vos établissements habituels avec leurs horaires.</p>
     <details>
       <summary>Comment ça marche ?</summary>
-      <p>Rendez-vous sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> et sélectionnez l'établissement avec horaires que vous souhaitez ajouter à la liste. Copiez-collez l'URL (par exemple https://www.openstreetmap.org/node/10793287765) dans le champ ci-dessous et cliquez sur Ajouter.</p>
-      <p>Si vous avez paramétré votre navigateur pour vider l'historique à la fermeture vous voudrez peut-être ajouter une exception pour ce site de manière à ne pas perdre votre liste car les données sont enregistrées localement dans votre navigateur.</p>
+      <p>Rendez-vous sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> et recherchez l'établissement que vous souhaitez ajouter à la liste. Copiez-collez son URL dans le champ ci-dessous et cliquez sur Ajouter.</p>
+      <p>Attention, si vous avez paramétré votre navigateur pour vider l'historique à la fermeture vous voudrez peut-être ajouter une exception pour ce site de manière à ne pas perdre votre liste car les données sont enregistrées localement dans votre navigateur.</p>
     </details>
     <div v-if="localStorageAvailable">
       <form v-on:submit.prevent="addItem">
@@ -54,6 +54,7 @@
   <footer class="container-xl margin-start-6xl size-s">
     <hr>
     <p>Ce service s'appuie sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> (contribuez en vous amusant avec <a href="https://streetcomplete.app/" target="_blank">StreetComplete</a>), l'<a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank">API Overpass</a>, la bibliothèque <a href="https://github.com/opening-hours/opening_hours.js" target="_blank">opening_hours.js</a>, le framework <a href="https://vuejs.org/" target="_blank">Vue.js</a> et la bibliothèque d'interface <a href="https://kelpui.com/" target="_blank">Kelp</a>.</p>
+    <p>Un problème ? Une suggestion ? Ouvrez une issue sur le projet dans <a href="https://github.com/jboisseur/est-ouvert/issues" target="_blank">GitHub</a>.</p>
   </footer>
 </body>
 </html>
