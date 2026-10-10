@@ -41,7 +41,7 @@
           </thead>
           <tbody>
             <tr v-for="item in itemList">
-              <td>{{ item.name }}</td>
+              <td><span role="img" v-html="item.state ? `&#128994;` :  `&#128308;`" v-bind:aria-label="item.state ? 'Ouvert' : 'Fermé'"></span>  {{ item.name }}</td>
               <td v-html="createNewLine(item.oh)"></td>
               <td><button type="button" v-on:click="deleteItem(item.id)" class="muted warning size-3xs">X</button></td>
             </tr>

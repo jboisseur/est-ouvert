@@ -2,6 +2,7 @@ const lsn = 'estouvert'; // lsn = local storage name
 
 const lang = "fr-FR";
 const options = { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "numeric"};
+const locale = navigator.language;
 
 function storageAvailable(type) {
     let storage;
@@ -41,6 +42,11 @@ const app = Vue.createApp({
         // Update now every second (1000ms)
         this.intervalId = setInterval(() => {
             this.now = new Intl.DateTimeFormat(lang, options).format(Temporal.Now.plainDateTimeISO());
+            for (let i = 0; i < this.itemList.length; i++) {
+                let currentItem = this.itemList[i];
+                currentItem.state = this.getOhState(currentItem.rawOh);
+            }
+            this.saveItemList();
         }, 1000);
     },
     beforeUnmount() {
@@ -58,7 +64,7 @@ const app = Vue.createApp({
                 this.item = { id, type };
 
                 this.fetchQuery = 
-                    `[out:json][timeout:50];
+                    `[out:json][timeout:30];
                     ${ this.item.type }(id:${ this.item.id });
                     out;`;
                 this.fetchData(this.fetchQuery);
@@ -71,7 +77,9 @@ const app = Vue.createApp({
         },
         updateItem(tags) {
             this.item.name = tags.name;
-            this.item.oh = this.liftOh(tags.opening_hours);
+            this.item.rawOh = tags.opening_hours;
+            this.item.oh = this.liftOh(this.item.rawOh);
+            this.item.state = this.getOhState(this.item.rawOh);
             this.itemList.push(this.item);
             this.saveItemList();
         },
@@ -116,10 +124,14 @@ const app = Vue.createApp({
         findIndex(itemId) {            
             return this.itemList.findIndex(itemObject => itemObject.id === itemId);
         },
-        liftOh(str) {
-            let locale = navigator.language;
-            let oh = new opening_hours(str, {}, { locale: locale });
-            return oh.prettifyValue({ conf: { locale: locale } });
+        createOh(str) {            
+            return new opening_hours(str, {}, { locale: locale });
+        },
+        liftOh(str) {   
+            return this.createOh(str).prettifyValue({ conf: { locale: locale } });
+        },
+        getOhState(str) { 
+            return this.createOh(str).getState();
         },
         createNewLine(str) {
             return str.split("; ").join("<br>").split(",").join(", ");

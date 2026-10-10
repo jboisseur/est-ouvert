@@ -12,9 +12,9 @@ Ce service s'appuie sur
 # Ce qu'il reste à faire
 ## Fonctionnel
 - [ ] Permettre de rafraichir toutes les données
-- [ ] Ajouter un indicateur ouvert / fermé avec `oh.getState(date);`
+- [x] Ajouter un indicateur ouvert / fermé avec `oh.getState(date);`
 - [ ] Indiquer le poids utilisé dans le stockage local
-- [ ] Gestion d'erreur, jour férié (exemple https://www.openstreetmap.org/node/3049211018#map=18/48.578632/7.759990)
+- [ ] Gestion d'erreur : jour férié (https://www.openstreetmap.org/node/3049211018#map=18/48.578632/7.759990), code pays manquant (https://www.openstreetmap.org/node/1255714662)
 - [x] Désactiver le bouton Ajouter quand le fetch est en cours
 
 ## UI
