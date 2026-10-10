@@ -26,7 +26,8 @@ const app = Vue.createApp({
     data() {
         return {
             info: "",
-            localStorageAvailable: storageAvailable("localStorage"),            
+            localStorageAvailable: storageAvailable("localStorage"),     
+            fetchOngoing: false,       
             fetchFailed: false,
             fetchQuery: "",
             item: {},
@@ -62,6 +63,7 @@ const app = Vue.createApp({
                     out;`;
                 this.fetchData(this.fetchQuery);
 
+                this.itemUrl = "";
             }
             else {
                 this.info = "L'URL ne respecte pas le format attendu."
@@ -84,6 +86,7 @@ const app = Vue.createApp({
         },
         fetchData(query) {
             this.info = "Recherche d'informations en cours...";
+            this.fetchOngoing = true;
             this.fetchFailed = false;
             
             fetch('https://overpass-api.de/api/interpreter',{method: "POST",body: "data=" + encodeURIComponent(query),})
@@ -95,6 +98,7 @@ const app = Vue.createApp({
                 })
                 .then(data => {
                     this.info = "";
+                    this.fetchOngoing = false;
                     const tags = data.elements[0].tags;
                     tags.opening_hours ? this.updateItem(tags) : this.info = "Cet établissement n'a pas d'horaires, la requête ne peut pas aboutir.";                    
                 })
@@ -115,8 +119,12 @@ const app = Vue.createApp({
         liftOh(str) {
             let locale = navigator.language;
             let oh = new opening_hours(str, {}, { locale: locale });
-            return oh.prettifyValue({ conf: { locale: locale, print_semicolon: false, rule_sep_string: ' ; ' } });
+            return oh.prettifyValue({ conf: { locale: locale } });
         },
+        createNewLine(str) {
+            const res = str.split("; ").join("<br>");
+            return `${res}`;
+        }
     }
 })
 

@@ -11,15 +11,13 @@ Ce service s'appuie sur
 
 # Ce qu'il reste à faire
 ## Fonctionnel
-- Permettre de rafraichir toutes les données
-- Ajouter un indicateur ouvert / fermé avec `oh.getState(date);`
-- Indiquer le poids utilisé dans le stockage local
-- Exemple avec jours fériés : https://www.openstreetmap.org/node/3049211018#map=18/48.578632/7.759990. Renvoie un message d'erreur
-- Désactiver le bouton Ajouter quand le fetch est en cours
+- [ ] Permettre de rafraichir toutes les données
+- [ ] Ajouter un indicateur ouvert / fermé avec `oh.getState(date);`
+- [ ] Indiquer le poids utilisé dans le stockage local
+- [ ] Gestion d'erreur, jour férié (exemple https://www.openstreetmap.org/node/3049211018#map=18/48.578632/7.759990)
+- [x] Désactiver le bouton Ajouter quand le fetch est en cours
 
 ## UI
-- Trouver un moyen de faire un saut de ligne entre les jours ?(`rule_sep_string` avec `'\n'` ne fonctionne pas)
-- Permettre de trier le tableau
-    - par ordre alpha
-    - par horaire 
-    - par distance géographique par rapport à sa position
+- [x] Trouver un moyen de faire un saut de ligne entre les jours
+- [ ] Trouver comment ne pas indiquer comme erroné le champ vidé une fois cliqué sur Ajouter
+- [ ] Permettre de réorganiser les lignes du tableau par glisser / déposer
