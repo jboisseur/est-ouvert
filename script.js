@@ -42,9 +42,12 @@ const app = Vue.createApp({
         // Update now every second (1000ms)
         this.intervalId = setInterval(() => {
             this.now = new Intl.DateTimeFormat(lang, options).format(Temporal.Now.plainDateTimeISO());
+
+            // Verify state
             for (let i = 0; i < this.itemList.length; i++) {
                 let currentItem = this.itemList[i];
-                currentItem.state = this.getOhState(currentItem.rawOh);
+                const oh = this.createOh(currentItem.rawOh, currentItem.nominatim);
+                currentItem.state = this.getOhState(oh);
             }
             this.saveItemList();
         }, 1000);
@@ -75,11 +78,24 @@ const app = Vue.createApp({
                 this.info = "L'URL ne respecte pas le format attendu."
             }
         },
-        updateItem(tags) {
-            this.item.name = tags.name;
-            this.item.rawOh = tags.opening_hours;
-            this.item.oh = this.liftOh(this.item.rawOh);
-            this.item.state = this.getOhState(this.item.rawOh);
+        updateItem(result) {
+            // result = { tags, coordinates, address }           
+            this.item.name = result.tags.name;
+            this.item.rawOh = result.tags.opening_hours;
+            this.item.nominatim = {
+                lat: result.coordinates.lat,
+                lon: result.coordinates.lon,
+                address: {
+                    country_code: result.address.country_code,
+                    state: result.address.state
+                }
+            };
+            
+            const oh = this.createOh(this.item.rawOh, this.item.nominatim);
+
+            this.item.oh = this.liftOh(oh);
+            this.item.state = this.getOhState(oh);
+
             this.itemList.push(this.item);
             this.saveItemList();
         },
@@ -96,7 +112,9 @@ const app = Vue.createApp({
             this.info = "Recherche d'informations en cours...";
             this.fetchOngoing = true;
             this.fetchFailed = false;
-            
+
+            const result = {};
+
             fetch('https://overpass-api.de/api/interpreter',{method: "POST",body: "data=" + encodeURIComponent(query),})
                 .then(response => {
                     if (!response.ok) {
@@ -105,10 +123,44 @@ const app = Vue.createApp({
                     return response.json()
                 })
                 .then(data => {
-                    this.info = "";
-                    this.fetchOngoing = false;
-                    const tags = data.elements[0].tags;
-                    tags.opening_hours ? this.updateItem(tags) : this.info = "Cet établissement n'a pas d'horaires, la requête ne peut pas aboutir.";                    
+                    const res = data.elements[0];
+
+                    result.tags = res.tags; // Object having name and opening_hours
+                    
+                    return res.type === 'node' ?
+                        result.coordinates = { lat: res.lat, lon: res.lon} :
+                        
+                        fetch('https://overpass-api.de/api/interpreter',{method: "POST",body: "data=" + encodeURIComponent(`[out:json][timeout:30];node(id:${res.nodes[0]});out;`),})
+                        .then(response2 => {
+                            if (!response2.ok) {
+                                throw new Error(`${response2.status} ${response2.statusText}`);
+                            }
+                            return response2.json()
+                        })
+                        .then(data2 => { 
+                            const res2 = data2.elements[0];
+                            return result.coordinates = { lat: res2.lat, lon: res2.lon}                            
+                        }) // coordinates are used to build the nominatim object (parameter to create a "oh" object)
+                })
+                .then(() => {                           
+                    return fetch(`https://nominatim.openstreetmap.org/reverse?lat=${result.coordinates.lat}&lon=${result.coordinates.lon}&format=json&accept-language=${locale}`)
+                    .then(response3 => {
+                        if (!response3.ok) {
+                            throw new Error(`${response3.status} ${response3.statusText}`);
+                        }                    
+                        return response3.json()
+                        })
+                        .then(data3 => {
+                            this.info = "";
+                            this.fetchOngoing = false;
+
+                            result.address = {
+                                country_code: data3.address.country_code,
+                                state: data3.address.state
+                            }
+                                
+                            result.tags.opening_hours ? this.updateItem(result) : this.info = "Cet établissement n'a pas d'horaires, la requête ne peut pas aboutir.";
+                        })
                 })
                 .catch(error => {
                     this.fetchFailed = true;
@@ -124,14 +176,14 @@ const app = Vue.createApp({
         findIndex(itemId) {            
             return this.itemList.findIndex(itemObject => itemObject.id === itemId);
         },
-        createOh(str) {            
-            return new opening_hours(str, {}, { locale: locale });
+        createOh(str, nominatim) {
+            return new opening_hours(str, nominatim, { locale: locale });
         },
-        liftOh(str) {   
-            return this.createOh(str).prettifyValue({ conf: { locale: locale } });
+        liftOh(oh) {
+            return oh.prettifyValue({ conf: { locale: locale } });
         },
-        getOhState(str) { 
-            return this.createOh(str).getState();
+        getOhState(oh) {            
+            return oh.getState();
         },
         createNewLine(str) {
             return str.split("; ").join("<br>").split(",").join(", ");

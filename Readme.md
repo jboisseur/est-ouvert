@@ -14,7 +14,7 @@ Ce service s'appuie sur
 - [ ] Permettre de rafraichir toutes les données
 - [x] Ajouter un indicateur ouvert / fermé avec `oh.getState(date);`
 - [ ] Indiquer le poids utilisé dans le stockage local
-- [ ] Gestion d'erreur : jour férié (https://www.openstreetmap.org/node/3049211018#map=18/48.578632/7.759990), code pays manquant (https://www.openstreetmap.org/node/1255714662)
+- [x] Gestion d'erreur : jour férié, code pays manquant -- nécessite de passer un objet "nominatim" en paramètre lors de la création d'un objet opening hour. Construit grâce au [Reverse Geocoding](https://nominatim.org/release-docs/develop/api/Reverse/) à partir de la latitude et de la longitude, uniquement disponibles sur les type Node. Donc pour les type Way il faut récupérer les informations sur le premier Node lié, d'où une cascade de Fetch.
 - [x] Désactiver le bouton Ajouter quand le fetch est en cours
 
 ## UI

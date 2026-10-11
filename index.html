@@ -36,14 +36,15 @@
             <tr>
               <th scope="col">Nom</th>
               <th scope="col">Horaires</th>
-              <th scope="col">Supprimer</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in itemList">
-              <td><span role="img" v-html="item.state ? `&#128994;` :  `&#128308;`" v-bind:aria-label="item.state ? 'Ouvert' : 'Fermé'"></span>  {{ item.name }}</td>
+              <td>
+                <span role="img" v-html="item.state ? `&#128994;` :  `&#128308;`" v-bind:aria-label="item.state ? 'Ouvert' : 'Fermé'"></span>  {{ item.name }}<br>
+                <button type="button" v-on:click="deleteItem(item.id)" class="muted warning size-3xs">Supprimer</button>
+              </td>
               <td v-html="createNewLine(item.oh)"></td>
-              <td><button type="button" v-on:click="deleteItem(item.id)" class="muted warning size-3xs">X</button></td>
             </tr>
           </tbody>
         </table>
