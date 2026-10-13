@@ -153,6 +153,7 @@ const app = Vue.createApp({
                         .then(data3 => {
                             this.info = "";
                             this.fetchOngoing = false;
+                            this.$refs.form.reset();
 
                             result.address = {
                                 country_code: data3.address.country_code,
@@ -166,6 +167,13 @@ const app = Vue.createApp({
                     this.fetchFailed = true;
                     this.info = `Aïe quelque chose s'est mal passé. ${error}`;
                 });
+        },
+        abandonFetching() {
+            this.fetchOngoing = false;       
+            this.fetchFailed = false;
+            this.fetchQuery = "";
+            this.info = "";
+            this.$refs.form.reset();
         },
         // utils
         verifyInput(input) {

@@ -24,13 +24,13 @@
       <p>Attention, si vous avez paramétré votre navigateur pour vider l'historique à la fermeture vous voudrez peut-être ajouter une exception pour ce site de manière à ne pas perdre votre liste car les données sont enregistrées localement dans votre navigateur.</p>
     </details>
     <div v-if="localStorageAvailable">
-      <form v-on:submit.prevent="addItem">
+      <form v-on:submit.prevent="addItem" ref="form">
         <label for="itemUrl">URL</label>
-        <input id="itemUrl" type="text" placeholder="https://www.openstreetmap.org/node/10793287765" v-model="itemUrl" required>
+        <input id="itemUrl" type="text" placeholder="https://www.openstreetmap.org/node/10793287765" v-model="itemUrl" v-bind:disabled="fetchOngoing" required>
         <button type="submit" class="primary" v-bind:disabled="fetchOngoing">Ajouter</button>
       </form>
       <section>
-        <p v-if="info" class="callout">{{ info }} <button type="button" v-if="fetchFailed" v-on:click="fetchData(fetchQuery)" class="muted secondary">Relancer</button></p>
+        <p v-if="info" class="callout">{{ info }} <button type="button" v-if="fetchFailed" v-on:click="fetchData(fetchQuery)" class="muted secondary">Relancer</button> <button type="button" v-if="fetchFailed" v-on:click="abandonFetching()" class="muted warning">Abandonner</button></p>
         <p class="text-center margin-start-m text-color primary">Nous sommes le {{ now }}</p>
         <table id="liste" v-if="itemList.length > 0">
           <thead>
