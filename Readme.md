@@ -14,8 +14,8 @@ Ce service s'appuie sur
 # Ce qu'il reste à faire
 ## Fonctionnel
 - [ ] Permettre de rafraichir toutes les données
-- [ ] Indiquer le poids utilisé dans le stockage local
 - [ ] Internationalisation ?
+- [x] Indiquer le poids utilisé dans le stockage local
 - [x] Donner la possibilité d'abandonner une requête si elle n'aboutit pas
 - [x] Ajouter un indicateur ouvert / fermé avec `oh.getState(date);`
 - [x] Gestion d'erreur : jour férié, code pays manquant -- nécessite de passer un objet "nominatim" en paramètre lors de la création d'un objet opening hour. Construit grâce au [Reverse Geocoding](https://nominatim.org/release-docs/develop/api/Reverse/) à partir de la latitude et de la longitude, uniquement disponibles sur les type Node. Donc pour les type Way il faut récupérer les informations sur le premier Node lié, d'où une cascade de Fetch.
@@ -24,6 +24,7 @@ Ce service s'appuie sur
 ## UI
 - [ ] Permettre de réorganiser les lignes du tableau par glisser / déposer
 - [ ] Ajouter une Foire aux questions
+- [x] Ne pas effacer l'URL de l'input tant que la requête n'est pas abandonnée ou réussie
 - [x] Trouver comment ne pas indiquer comme erroné le champ vidé une fois cliqué sur Ajouter -- désactivé comme le bouton lorsqu'une recherche est en cours + `form.reset()` lorsque la requête est abandonnée ou réussie. Au passage j'ai fait la connaissance du [ValidityState](https://developer.mozilla.org/en-US/docs/Web/API/ValidityState)
 - [x] Trouver un moyen de faire un saut de ligne entre les jours
 - [x] Ajouter une espace après la virgules dans les heures pour améliorer l'affichage sur téléphone

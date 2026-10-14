@@ -50,13 +50,16 @@
           </tbody>
         </table>
       </section>
+      <aside class="margin-start-6xl size-xs">
+        <p class="text-center text-muted">Vos données occupent {{ localStorageSize }} Mo</p>
+      </aside>
     </div>
     <p v-else="localStorageAvailable" class="callout warning">Ce service dépend du stockage local de votre navigateur et il ne semble pas fonctionner correctement. Essayez avec un autre navigateur ?</p>
   </main>
-  <footer class="container-xl margin-start-6xl size-s">
+  <footer class="container-xl margin-start-6xl">
     <hr>
-    <p>Ce service s'appuie sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> (contribuez en vous amusant avec <a href="https://streetcomplete.app/" target="_blank">StreetComplete</a>), l'<a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank">API Overpass</a>, la bibliothèque <a href="https://github.com/opening-hours/opening_hours.js" target="_blank">opening_hours.js</a>, le framework <a href="https://vuejs.org/" target="_blank">Vue.js</a> et la bibliothèque d'interface <a href="https://kelpui.com/" target="_blank">Kelp</a>.</p>
-    <p>Un problème ? Une suggestion ? Ouvrez une issue sur le projet dans <a href="https://github.com/jboisseur/est-ouvert" target="_blank">GitHub</a>.</p>
+    <p class="size-xs">Ce service s'appuie sur <a href="https://www.openstreetmap.org" target="_blank">OpenStreetMap</a> (contribuez en vous amusant avec <a href="https://streetcomplete.app/" target="_blank">StreetComplete</a>), l'<a href="https://wiki.openstreetmap.org/wiki/Overpass_API" target="_blank">API Overpass</a>, la bibliothèque <a href="https://github.com/opening-hours/opening_hours.js" target="_blank">opening_hours.js</a>, le framework <a href="https://vuejs.org/" target="_blank">Vue.js</a> et la bibliothèque d'interface <a href="https://kelpui.com/" target="_blank">Kelp</a>.</p>
+    <p class="size-xs">Un problème ? Une suggestion ? Ouvrez une issue sur le projet dans <a href="https://github.com/jboisseur/est-ouvert" target="_blank">GitHub</a>.</p>
   </footer>
 </body>
 </html>

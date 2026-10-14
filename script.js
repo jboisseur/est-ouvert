@@ -27,7 +27,8 @@ const app = Vue.createApp({
     data() {
         return {
             info: "",
-            localStorageAvailable: storageAvailable("localStorage"),     
+            localStorageAvailable: storageAvailable("localStorage"),
+            localStorageSize: 0,    
             fetchOngoing: false,       
             fetchFailed: false,
             fetchQuery: "",
@@ -51,6 +52,15 @@ const app = Vue.createApp({
             }
             this.saveItemList();
         }, 1000);
+
+        // Calculate localStorageSize        
+        const encoder = new TextEncoder(); // Initialize TextEncoder for byte measurement
+        const keySize = encoder.encode(lsn).byteLength; // Bytes used by the key
+        const valueSize = encoder.encode(localStorage.getItem(lsn)).byteLength; // Bytes used by the value
+        const entrySize = keySize + valueSize; // Total bytes for this entry
+        const totalKB = entrySize / 1024; // 1 KB = 1024 bytes
+        const totalMB = totalKB / 1024; // 1 MB = 1024 KB
+        this.localStorageSize = totalMB.toFixed(2);
     },
     beforeUnmount() {
         // Critical: Clear the interval to prevent memory leaks
@@ -71,8 +81,6 @@ const app = Vue.createApp({
                     ${ this.item.type }(id:${ this.item.id });
                     out;`;
                 this.fetchData(this.fetchQuery);
-
-                this.itemUrl = "";
             }
             else {
                 this.info = "L'URL ne respecte pas le format attendu."
@@ -154,6 +162,7 @@ const app = Vue.createApp({
                             this.info = "";
                             this.fetchOngoing = false;
                             this.$refs.form.reset();
+                            this.itemUrl = null;
 
                             result.address = {
                                 country_code: data3.address.country_code,
@@ -173,6 +182,7 @@ const app = Vue.createApp({
             this.fetchFailed = false;
             this.fetchQuery = "";
             this.info = "";
+            this.itemUrl = null,
             this.$refs.form.reset();
         },
         // utils
