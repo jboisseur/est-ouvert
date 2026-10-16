@@ -59,8 +59,7 @@ const app = Vue.createApp({
         const valueSize = encoder.encode(localStorage.getItem(lsn)).byteLength; // Bytes used by the value
         const entrySize = keySize + valueSize; // Total bytes for this entry
         const totalKB = entrySize / 1024; // 1 KB = 1024 bytes
-        const totalMB = totalKB / 1024; // 1 MB = 1024 KB
-        this.localStorageSize = totalMB.toFixed(2);
+        this.localStorageSize = totalKB.toFixed(2);
     },
     beforeUnmount() {
         // Critical: Clear the interval to prevent memory leaks
@@ -86,11 +85,14 @@ const app = Vue.createApp({
                 this.info = "L'URL ne respecte pas le format attendu."
             }
         },
-        updateItem(result) {
-            // result = { tags, coordinates, address }           
-            this.item.name = result.tags.name;
-            this.item.rawOh = result.tags.opening_hours;
-            this.item.nominatim = {
+        updateItem(result) { // result = { tags, coordinates, address }
+            const index = this.findIndex(this.item.id);
+            
+            const item = index > -1 ? this.itemList[index] : this.item;
+            
+            item.name = result.tags.name;
+            item.rawOh = result.tags.opening_hours;
+            item.nominatim = {
                 lat: result.coordinates.lat,
                 lon: result.coordinates.lon,
                 address: {
@@ -99,13 +101,22 @@ const app = Vue.createApp({
                 }
             };
             
-            const oh = this.createOh(this.item.rawOh, this.item.nominatim);
+            const oh = this.createOh(item.rawOh, item.nominatim);
 
-            this.item.oh = this.liftOh(oh);
-            this.item.state = this.getOhState(oh);
+            item.oh = this.liftOh(oh);
+            item.state = this.getOhState(oh);
 
-            this.itemList.push(this.item);
+            index > -1 ? null : this.itemList.push(item); // update or create item
+
             this.saveItemList();
+        },
+        refreshItem(type, id) {
+            this.item = { id, type };
+            this.fetchQuery = 
+                    `[out:json][timeout:30];
+                    ${ type }(id:${ id });
+                    out;`;
+            this.fetchData(this.fetchQuery);
         },
         deleteItem(id) {
             const index = this.findIndex(id);

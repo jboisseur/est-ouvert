@@ -37,21 +37,25 @@
             <tr>
               <th scope="col">Nom</th>
               <th scope="col">Horaires</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in itemList">
               <td>
                 <span role="img" v-html="item.state ? `&#128994;` :  `&#128308;`" v-bind:aria-label="item.state ? 'Ouvert' : 'Fermé'"></span>  {{ item.name }}<br>
-                <button type="button" v-on:click="deleteItem(item.id)" class="muted warning size-3xs">Supprimer</button>
               </td>
               <td v-html="createNewLine(item.oh)"></td>
+              <td class="flex gap-6xs wrap">
+                <button type="button" v-on:click="refreshItem(item.type, item.id)" class="muted secondary size-3xs" v-bind:disabled="fetchOngoing" aria-label="Rafraichir les données" title="Rafraichir les données">&#9851;</button>
+                <button type="button" v-on:click="deleteItem(item.id)" class="muted warning size-3xs" v-bind:disabled="fetchOngoing" aria-label="Supprimer" title="Supprimer">&#128465;</button>
+              </td>
             </tr>
           </tbody>
         </table>
       </section>
       <aside class="margin-start-6xl size-xs">
-        <p class="text-center text-muted">Vos données occupent {{ localStorageSize }} Mo</p>
+        <p class="text-center text-muted">Vos données occupent {{ localStorageSize }} Ko</p>
       </aside>
     </div>
     <p v-else="localStorageAvailable" class="callout warning">Ce service dépend du stockage local de votre navigateur et il ne semble pas fonctionner correctement. Essayez avec un autre navigateur ?</p>
