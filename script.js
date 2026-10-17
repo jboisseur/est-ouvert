@@ -36,7 +36,8 @@ const app = Vue.createApp({
             itemList: localStorage.getItem(lsn) ? JSON.parse(localStorage.getItem(lsn)) : [],
             itemUrl: null,
             now: new Intl.DateTimeFormat(lang, options).format(Temporal.Now.plainDateTimeISO()),
-            intervalId: null
+            intervalId: null,
+            sort: "asc"
         }
     },
     mounted() {
@@ -64,6 +65,11 @@ const app = Vue.createApp({
     beforeUnmount() {
         // Critical: Clear the interval to prevent memory leaks
         clearInterval(this.intervalId);
+    },
+    computed: {
+        sorted() {
+            return this.sort === "asc" ? '&#8593;' : '&#8595;';
+        }
     },
     methods: {
         addItem() {
@@ -216,6 +222,17 @@ const app = Vue.createApp({
         },
         createNewLine(str) {
             return str.split("; ").join("<br>").split(",").join(", ");
+        },
+        // Sort logic
+        sortTable() {
+            if (this.sort === "asc") {
+                this.sort = "des";
+                this.itemList.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            else {
+                this.sort = "asc";
+                this.itemList.sort((a, b) => b.name.localeCompare(a.name));
+            }            
         },
         // Drap & drop logic
         startDrag(evt, item) {

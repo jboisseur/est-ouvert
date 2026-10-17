@@ -13,7 +13,7 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="script.js" defer></script>
   <style>
-    tr[draggable="true"] {
+    tr[draggable="true"], #sortArrow {
       cursor: pointer;
     }    
   </style>
@@ -40,7 +40,7 @@
         <table id="liste" v-if="itemList.length > 0">
           <thead>
             <tr>
-              <th scope="col">Nom</th>
+              <th scope="col">Nom <span v-html="sorted" v-on:click="sortTable()" id="sortArrow"></span></th>
               <th scope="col">Horaires</th>
               <th scope="col">Actions</th>
             </tr>

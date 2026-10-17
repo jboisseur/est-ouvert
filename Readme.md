@@ -17,4 +17,5 @@ Ce service s'appuie sur
 - [ ] Internationalisation ?
 
 ## UI
-- [ ] Permettre de réorganiser les lignes du tableau par ordre alphabétique sur le nom
+- [ ] Permettre de réorganiser les lignes du tableau en drag & drop sur téléphone également (:
+- [ ] Ajouter une Foire aux questions
