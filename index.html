@@ -12,6 +12,11 @@
   <script src="https://openingh.openstreetmap.de/build/opening_hours+deps.min.js"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
   <script src="script.js" defer></script>
+  <style>
+    tr[draggable="true"] {
+      cursor: pointer;
+    }    
+  </style>
 </head>
 <body>
   <noscript>Ce service dépend de JavaScript ; pour en profiter vous devez l'activer.</noscript>
@@ -40,8 +45,17 @@
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <tbody>
-            <tr v-for="item in itemList">
+          <tbody
+            @drop="onDrop($event)"
+            @dragover.prevent
+            @dragenter.prevent
+          >
+            <tr 
+              v-for="item in itemList"
+              :key="item.id"
+              draggable="true"
+              @dragstart="startDrag($event, item)"
+            >
               <td>
                 <span role="img" v-html="item.state ? `&#128994;` :  `&#128308;`" v-bind:aria-label="item.state ? 'Ouvert' : 'Fermé'"></span>  {{ item.name }}<br>
               </td>

@@ -216,6 +216,20 @@ const app = Vue.createApp({
         },
         createNewLine(str) {
             return str.split("; ").join("<br>").split(",").join(", ");
+        },
+        // Drap & drop logic
+        startDrag(evt, item) {
+            evt.dataTransfer.dropEffect = 'move';
+            evt.dataTransfer.effectAllowed = 'move';
+            evt.dataTransfer.setData('itemID', item.id);
+        },
+        onDrop(evt) {
+            const currentIndex = this.findIndex(evt.dataTransfer.getData('itemID'));
+            const targetIndex = evt.target.parentElement.rowIndex - 1;
+            this.item = this.itemList[currentIndex];
+            this.itemList.splice(currentIndex, 1); // remove item from current index
+            this.itemList.splice(targetIndex, 0, this.item) // add it starting from target index
+            this.item = {};
         }
     }
 })
